@@ -18,7 +18,7 @@ $message = "";
 $response = "";
 $check_session = check_session($sessionId, $phoneNumber);
 if ( $text == "" && $check_session == "0") {
-   $message = "CON Ikaze kuri Learning Reminder. \n";
+   $message = "CON Ikaze kuri ITEGURE. \n";
    $response = $message."Hitamo ururimi: \n";
    $response .= "1. Kinyarwanda \n";
    $response .= "2. English \n";
@@ -86,13 +86,13 @@ function get_menu($phoneNumber, $session, $text, $userExists, $token)
               json_encode(array("phoneNumber" => $phoneNumber, "name" => $names)),
               ""
             );
-            $response = "END Successfully registered, You can now add student.";
+            $response = "END ".(($lan == "title_kinya") ? get_element_translation("11", "kinya"):get_element_translation("11", "en") )." \n";
           } else {
             if ($users_level[1] == "1") {
               $response  = "CON ".(($lan == "title_kinya") ? get_element_translation("4", "kinya"): get_element_translation("4", "en"))."\n";
             }
             if ($users_level[1] == "2") {
-              $response  = "CON ".(($lan == "title_kinya") ? get_element_translation("3", "kinya"): get_element_translation("3", "en"))." \n";
+              $response  = "END ".(($lan == "title_kinya") ? get_element_translation("3", "kinya"): get_element_translation("3", "en"))." \n";
               $serverRequest = sendAPIRequest(
                 "POST",
                 "/subscriptions/ussd-login",
@@ -102,8 +102,10 @@ function get_menu($phoneNumber, $session, $text, $userExists, $token)
               $serverRequest = json_decode($serverRequest, true);
               $childrenList = $serverRequest['result']['information'][0]['parent'];
               $i = 1;
+              $in = (($lan == "title_kinya") ? get_element_translation("10", "kinya"):get_element_translation("10", "en") );
+              $at = (($lan == "title_kinya") ? get_element_translation("9", "kinya"):get_element_translation("9", "en") );
               foreach($childrenList as $childInfo) {
-                $response .= $i.". ".$childInfo['name']." in ".$childInfo['class']['name']." at ".$childInfo['school']." \n";
+                $response .= "- ".$childInfo['name']." $in ".$childInfo['class']['name']." $at ".$childInfo['school']." \n";
                 $i++;
               }
             }
